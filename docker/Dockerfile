@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y \
     python3-numpy \
     python3-scipy \
     python3-matplotlib \
-  && && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install 'Click==6.7' 'pandas==0.19.2' 'dendropy==4.2.0' \
     'biopython==1.68'
