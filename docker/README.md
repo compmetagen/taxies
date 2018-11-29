@@ -4,10 +4,10 @@ Homepage: https://github.com/compmetagen/taxies.
 
 This image includes:
 
-    * Prodigal v2.6.3
-    * HMMER v3.2.1
-    * VSEARCH v2.9.1
-    * Taxies (GitHub master)
+ * Prodigal v2.6.3
+ * HMMER v3.2.1
+ * VSEARCH v2.9.1
+ * Taxies (GitHub master)
 
 ## Quickstart
 

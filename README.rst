@@ -8,9 +8,6 @@ Example:
     taxies gentax tophits.txt tax.txt
 
 
-
-
-
 Docker image
 ^^^^^^^^^^^^
 DockerHub: https://hub.docker.com/r/compmetagen/taxies/
