@@ -1,4 +1,0 @@
-
-        [console_scripts]
-        taxies=taxies.scripts.taxies:cli
-    
