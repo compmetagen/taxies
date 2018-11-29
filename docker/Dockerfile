@@ -59,7 +59,7 @@ WORKDIR /
 RUN rm -rf /tmp/v2.9.1.tar.gz /tmp/vsearch-2.9.1
 
 # Taxies
-RUN git clone https://github.com/compmetagen/taxies.git /tmp/taxies/
+RUN git clone git://github.com/compmetagen/taxies.git /tmp/taxies/
 WORKDIR /tmp/taxies/
 RUN python3 setup.py install
 WORKDIR /
