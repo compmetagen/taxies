@@ -18,7 +18,6 @@ with warnings.catch_warnings():
 
 from . import db
 from . import utils
-from . import taxonomy
 
   
 
@@ -201,30 +200,35 @@ def toph(mark_fn, db_dir, toph_fn, custom_pnames_fn=None, min_ident=0.60,
         toph_handle.close()
 
 
-def lca(input_fn, tax_fn, min_conf=0.8):
-    taxtable_df = taxonomy.read_taxtable(input_fn)
-    cladogram = taxonomy.taxtable2cladogram(taxtable_df)
+def tax(input_fn, tax_fn, min_conf=0.8, name=None):
+    taxtable_df = utils.read_taxtable(input_fn)
+    cladogram = utils.taxtable2cladogram(taxtable_df)
     tot_count = sum([n.count for n in cladogram.seed_node.child_node_iter()])
     
-    found, node,  = False, None
-    for i in range(cladogram.max_rank, 0, -1):
-        filter_fn = lambda n: hasattr(n, 'rank') and (n.rank == i)
-        nodes = cladogram.find_nodes(filter_fn=filter_fn)
-        for node in nodes:
-            if node.count / tot_count > min_conf:
-                found = True
-                break
-        if found is True:
-            break
+    nodes_path = []
+    node = cladogram.seed_node
+    while node.num_child_nodes() > 0:
+        count_max, child_node_max = 0, None
+        for child_node in node.child_node_iter():
+            if child_node.count > count_max:
+                count_max = child_node.count
+                child_node_max = child_node
+        nodes_path.append(child_node_max)
+        node = child_node_max
 
-    if node is None:
-        taxa = ""
-        perc_mark_hits = 0.0
-    else:
-        not_seed = lambda n: False if n.parent_node is None else True
-        taxa = ";".join([n.taxon.label for n in \
-            node.ancestor_iter(not_seed, inclusive=True)][::-1])
-        perc_mark_hits = 100*tot_count/cladogram.seed_node.count
+    tax_conf = ";".join( \
+        ["{}({:.2f})".format(n.taxon.label, n.count/tot_count) \
+        for n in nodes_path])
+
+    tax = ";".join( \
+        ["{}".format(n.taxon.label, n.count/tot_count) \
+        for n in nodes_path if (n.count/tot_count) > min_conf])
+
+    perc_hits = 100*tot_count/cladogram.seed_node.count
+
+    if name is None:
+        name = os.path.basename(input_fn)
 
     with open(tax_fn, 'w') as tax_handle:
-        tax_handle.write("{}\t{:.1f}\n".format(taxa, perc_mark_hits))
+        tax_handle.write("{}\t{}\t{}\t{:.2f}\n". \
+            format(name, tax, tax_conf, perc_hits))
