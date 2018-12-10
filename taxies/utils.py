@@ -18,9 +18,10 @@ def read_protein_names(input_fn):
 
 
 class TaxReader:
-    def __init__(self, handle):
+    def __init__(self, handle, taxcol=1):
         self.__handle = handle
         self.__reader = csv.reader(handle, delimiter='\t')
+        self.__taxcol = taxcol
 
     def __iter__(self):
         return self
@@ -39,16 +40,16 @@ class TaxReader:
 
     def __next__(self):
         row = self.__reader.__next__()
-        return row[0], self.__parse_tax(row[1])
+        return row[0], self.__parse_tax(row[self.__taxcol])
 
 
-def read_taxtable(input_fn):
+def read_taxtable(input_fn, taxcol=1):
     """
     """
 
     tax_dict = dict()
     with open(input_fn, 'rU') as input_handle:
-        taxreader = TaxReader(input_handle)
+        taxreader = TaxReader(input_handle, taxcol)
         for seqid, tax in taxreader:
             tax_dict[seqid] = tax
 
