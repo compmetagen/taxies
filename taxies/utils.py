@@ -70,7 +70,9 @@ def taxtable2cladogram(df):
     tree.seed_node.taxon = seed_taxon
 
     tree.seed_node.count = 0
+    tree.seed_node.annotations.add_bound_attribute("count")
     tree.seed_node.rank = 0
+    tree.seed_node.annotations.add_bound_attribute("rank")
     tree.max_rank = 0
 
     for index, row in df.iterrows():
@@ -89,7 +91,9 @@ def taxtable2cladogram(df):
                     taxon_namespace.add_taxon(taxon_taxon)
                     child = dendropy.Node(taxon=taxon_taxon)
                     child.count = 1
+                    child.annotations.add_bound_attribute("count")
                     child.rank = i+1
+                    child.annotations.add_bound_attribute("rank")
                     if child.rank > tree.max_rank:
                         tree.max_rank = child.rank
                     node_curr.add_child(child)
